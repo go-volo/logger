@@ -4,12 +4,17 @@ import (
 	"context"
 )
 
+// DefaultLogger is default logger.
+var DefaultLogger Logger = New()
+
 // Logger is the interface that wraps the basic Log method.
 type Logger interface {
 	// Init initializes options
 	Init(options ...Option) error
 	// Options returns the current options.
 	Options() Options
+	// SetLevel set logger level
+	SetLevel(lv Level)
 	// WithContext with context
 	WithContext(ctx context.Context) Logger
 	// WithFields set fields to always be logged

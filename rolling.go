@@ -318,6 +318,8 @@ func (r *RollingFile) writeBuffer(buff *bytes.Buffer) {
 
 // flushRoutine : ...
 func (r *RollingFile) flushRoutine() {
+	t := time.NewTicker(500 * time.Millisecond)
+
 	flush := func() {
 		readyLen := len(r.fullBuffer)
 		for i := 0; i < readyLen; i++ {
@@ -339,12 +341,14 @@ func (r *RollingFile) flushRoutine() {
 
 	//FIXME better solution ?
 	defer func() {
+		t.Stop()
 		flush()
 		if f := r.file; f != nil {
 			r.file = nil
 			f.Close()
 		}
 	}()
+
 	for {
 		select {
 		case <-r.syncFlush:
@@ -355,7 +359,7 @@ func (r *RollingFile) flushRoutine() {
 		case buff := <-r.fullBuffer:
 			r.writeBuffer(buff)
 			putBuffer(buff)
-		case <-time.After(500 * time.Millisecond):
+		case <-t.C:
 			r.mu.Lock()
 			if len(r.fullBuffer) != 0 {
 				r.mu.Unlock()

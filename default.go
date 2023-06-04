@@ -21,7 +21,7 @@ type logger struct {
 	_writeSyncers []zapcore.WriteSyncer
 }
 
-func NewLogger(opts ...Option) Logger {
+func New(opts ...Option) Logger {
 	opt := newOptions(opts...)
 	l := &logger{
 		opt:         opt,
@@ -206,6 +206,11 @@ func (l *logger) createOutput(filename string) (zapcore.WriteSyncer, error) {
 	return zapcore.AddSync(rollingFile), nil
 }
 
+func (l *logger) Clone() *logger {
+	_copy := *l
+	return &_copy
+}
+
 func (l *logger) Init(opts ...Option) error {
 	// process options
 	for _, o := range opts {
@@ -213,6 +218,11 @@ func (l *logger) Init(opts ...Option) error {
 	}
 
 	return nil
+}
+
+func (l *logger) SetLevel(lv Level) {
+	l.opt.level = lv
+	l.atomicLevel.SetLevel(lv.unmarshalZapLevel())
 }
 
 func (l *logger) Options() Options {

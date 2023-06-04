@@ -37,3 +37,5 @@ bin/
 .vscode/
 .idea/
 *.swp
+
+testdata/logs/*
