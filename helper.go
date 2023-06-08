@@ -10,6 +10,11 @@ func WithContext(ctx context.Context) Logger {
 	return DefaultLogger.WithContext(ctx)
 }
 
+// Fields is a helper to create a []interface{} of key-value pairs.
+func Fields(fields map[string]interface{}) logger.Logger {
+	return logger.DefaultLogger.WithFields(fields)
+}
+
 // SetLevel set logger level
 func SetLevel(lv Level) {
 	DefaultLogger.SetLevel(lv)
