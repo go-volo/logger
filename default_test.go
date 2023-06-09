@@ -1,12 +1,10 @@
 package logger
 
 import (
-	"context"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"go.opentelemetry.io/otel"
-	"go.opentelemetry.io/otel/trace"
+
 	"go.uber.org/zap"
 )
 
@@ -21,12 +19,6 @@ var (
 func TestMain(t *testing.M) {
 	defer Sync()
 	t.Run()
-}
-
-func contextWithSpan(operationName string) (context.Context, trace.Span) {
-	tracer := otel.Tracer("gokit")
-	ctx, span := tracer.Start(context.Background(), operationName, trace.WithSpanKind(trace.SpanKindInternal))
-	return ctx, span
 }
 
 func TestCopyFields(t *testing.T) {
@@ -119,12 +111,6 @@ func TestDefault_Warnw(t *testing.T) {
 func TestDefault_WithCallDepth(t *testing.T) {
 	log := New(WithBasePath("../logs"), WithConsole(true))
 	log.WithCallDepth(0).Info(msg)
-}
-
-func TestDefault_WithContext(t *testing.T) {
-	ctx, span := contextWithSpan("TestDefault_WithContext")
-	defer span.End()
-	WithContext(ctx).Info(msg)
 }
 
 func TestDefault_WithFields(t *testing.T) {
