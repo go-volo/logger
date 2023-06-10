@@ -46,6 +46,11 @@ type Options struct {
 	encoderConfig zapcore.EncoderConfig
 }
 
+// Level Get log level.
+func (o Options) Level() Level {
+	return o.level
+}
+
 func newOptions(opts ...Option) Options {
 	opt := Options{
 		level:       InfoLevel,
